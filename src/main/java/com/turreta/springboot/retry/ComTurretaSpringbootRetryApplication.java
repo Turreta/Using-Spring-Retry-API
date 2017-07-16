@@ -45,17 +45,25 @@ public class ComTurretaSpringbootRetryApplication
 
 		// ##### Example 2
 		List<String> dataTwo = retryTemplate.execute(
-
 				// Retries
-				retryContext ->
+				new RetryCallback<List<String>, Exception>()
 				{
-					System.out.println("Trying...");
-					return anyService.getAllCodes_Ok();
+					@Override public List<String> doWithRetry(RetryContext retryContext) throws Exception
+					{
+						System.out.println("Trying...");
+						return anyService.getAllCodes_Ok();
+					}
 				}
 				,
 
 				// Recover
-				retryContext -> Collections.EMPTY_LIST
+				new RecoveryCallback<List<String>>()
+				{
+					@Override public List<String> recover(RetryContext retryContext) throws Exception
+					{
+						return Collections.EMPTY_LIST;
+					}
+				}
 		);
 
 		// Successfully retrieved data
@@ -65,40 +73,48 @@ public class ComTurretaSpringbootRetryApplication
 		retryTemplate.execute(
 
 				// Retries
-				retryContext ->
+				new RetryCallback<List<String>, Exception>()
 				{
-					System.out.println("Trying...");
-					anyService.updateCode_ThrowException("AA", "OK");
-					return null;
-				}
-				,
+					@Override public List<String> doWithRetry(RetryContext retryContext) throws Exception
+					{
+						System.out.println("Trying...");
+						anyService.updateCode_ThrowException("AA", "OK");
+						return null;
+					}
+				},
 
 				// Recover
-				retryContext ->
+				new RecoveryCallback<List<String>>()
 				{
-					anyService.updateCode_Recovery("AA", "OK-BUT-ERROR");
-					return null;
+					@Override public List<String> recover(RetryContext retryContext) throws Exception
+					{
+						anyService.updateCode_Recovery("AA", "OK-BUT-ERROR");
+						return null;
+					}
 				}
-
 		);
 
 		// ##### Example 4
 		retryTemplate.execute(
 
 				// Retries
-				retryContext ->
+				new RetryCallback<List<String>, Exception>()
 				{
-					System.out.println("Trying...");
-					anyService.updateCode_Ok("AB", "OK");
-					return null;
-				}
-				,
+					@Override public List<String> doWithRetry(RetryContext retryContext) throws Exception
+					{
+						System.out.println("Trying...");
+						anyService.updateCode_Ok("AB", "OK");
+						return null;
+					}
+				},
 
-				// Recover
-				retryContext ->
+				new RecoveryCallback<List<String>>()
 				{
-					anyService.updateCode_Recovery("AA", "OK-BUT-ERROR");
-					return null;
+					@Override public List<String> recover(RetryContext retryContext) throws Exception
+					{
+						anyService.updateCode_Recovery("AA", "OK-BUT-ERROR");
+						return null;
+					}
 				}
 		);
 	}
