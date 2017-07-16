@@ -73,9 +73,9 @@ public class ComTurretaSpringbootRetryApplication
 		retryTemplate.execute(
 
 				// Retries
-				new RetryCallback<List<String>, Exception>()
+				new RetryCallback<Void, Exception>()
 				{
-					@Override public List<String> doWithRetry(RetryContext retryContext) throws Exception
+					@Override public Void doWithRetry(RetryContext retryContext) throws Exception
 					{
 						System.out.println("Trying...");
 						anyService.updateCode_ThrowException("AA", "OK");
@@ -84,9 +84,9 @@ public class ComTurretaSpringbootRetryApplication
 				},
 
 				// Recover
-				new RecoveryCallback<List<String>>()
+				new RecoveryCallback<Void>()
 				{
-					@Override public List<String> recover(RetryContext retryContext) throws Exception
+					@Override public Void recover(RetryContext retryContext) throws Exception
 					{
 						anyService.updateCode_Recovery("AA", "OK-BUT-ERROR");
 						return null;
@@ -98,9 +98,9 @@ public class ComTurretaSpringbootRetryApplication
 		retryTemplate.execute(
 
 				// Retries
-				new RetryCallback<List<String>, Exception>()
+				new RetryCallback<Void, Exception>()
 				{
-					@Override public List<String> doWithRetry(RetryContext retryContext) throws Exception
+					@Override public Void doWithRetry(RetryContext retryContext) throws Exception
 					{
 						System.out.println("Trying...");
 						anyService.updateCode_Ok("AB", "OK");
@@ -108,9 +108,9 @@ public class ComTurretaSpringbootRetryApplication
 					}
 				},
 
-				new RecoveryCallback<List<String>>()
+				new RecoveryCallback<Void>()
 				{
-					@Override public List<String> recover(RetryContext retryContext) throws Exception
+					@Override public Void recover(RetryContext retryContext) throws Exception
 					{
 						anyService.updateCode_Recovery("AA", "OK-BUT-ERROR");
 						return null;
